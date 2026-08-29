@@ -1,0 +1,35 @@
+{
+  "name": "r2s",
+  "version": "1.0.0",
+  "description": "Revenue Recovery System - synthetic payment environment and core data model (Aug 29 milestone)",
+  "type": "module",
+  "main": "src/seed.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "seed": "tsx src/seed.ts",
+    "prisma:validate": "prisma validate",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "keywords": [
+    "revenue-recovery",
+    "razorpay-buildathon"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^7.10.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "prisma": "^7.10.0",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "directories": {
+    "test": "tests"
+  }
+}

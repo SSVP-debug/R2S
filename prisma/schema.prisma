@@ -1,0 +1,267 @@
+// =============================================================================
+// R2S — Revenue Recovery System
+// AUTHORITATIVE DATA MODEL (Aug 29 design freeze)
+// =============================================================================
+//
+// This schema is the single source of truth for the R2S domain model.
+//
+// SANDBOX NOTE (read before assuming this is the runtime):
+// In the current sandboxed implementation environment, `prisma generate` /
+// `prisma migrate dev` cannot complete because the sandbox's network egress
+// allowlist blocks `binaries.prisma.sh`, the host Prisma downloads its
+// query/schema engine binaries from. This is a restriction of the sandbox,
+// not of this schema or of Prisma itself.
+//
+// For THIS SANDBOX SESSION ONLY, application code executes against Node's
+// built-in `node:sqlite` module via a small repository abstraction
+// (see src/db/), applying DDL that is hand-mirrored from this schema.
+// This schema file is not the runtime source of the sandbox's tables — the
+// DDL in src/db/ddl.ts is — but the DDL is written to match this schema
+// field-for-field, and this schema remains the model of record.
+//
+// In any unrestricted environment (e.g. the real buildathon environment),
+// this schema can be used exactly as written:
+//   npx prisma generate
+//   npx prisma migrate dev --name init
+// with zero changes required. See README "Migration path" section.
+//
+// NOTE ON ENUMS: Prisma does not support native enum types on the SQLite
+// connector. Enum-like fields below are modeled as String and are validated
+// against fixed literal sets in the TypeScript/Zod layer
+// (src/domain/types.ts, src/domain/schemas.ts), which is the actual source
+// of truth for allowed values.
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// -----------------------------------------------------------------------------
+// Simulation metadata / versioning
+// -----------------------------------------------------------------------------
+// One row per generated dataset. Lets us reproduce or distinguish datasets
+// even if the generator implementation changes later.
+model SimulationRun {
+  id               String   @id
+  seed             String
+  generatorVersion String
+  datasetVersion   String
+  createdAt        DateTime
+
+  merchants        Merchant[]
+  customers        Customer[]
+  payments         Payment[]
+  recoveryCases    RecoveryCase[]
+  recoveryAttempts RecoveryAttempt[]
+  auditEvents      AuditEvent[]
+  groundTruths     GroundTruth[]
+
+  @@index([seed])
+}
+
+// -----------------------------------------------------------------------------
+// Core domain model
+// -----------------------------------------------------------------------------
+
+model Merchant {
+  id     String @id
+  name   String
+  // category: "ecommerce" | "subscription" | "travel" | "utilities" | "marketplace"
+  category String
+
+  createdAt DateTime
+
+  simulationRunId String
+  simulationRun   SimulationRun @relation(fields: [simulationRunId], references: [id])
+
+  customers Customer[]
+  payments  Payment[]
+
+  @@index([simulationRunId])
+}
+
+model Customer {
+  id     String @id
+  name   String
+  email  String
+
+  // riskProfile: "low" | "medium" | "high"
+  // Drives behavioral correlations in payment failure generation.
+  riskProfile String
+
+  createdAt DateTime
+
+  merchantId String
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+
+  simulationRunId String
+  simulationRun   SimulationRun @relation(fields: [simulationRunId], references: [id])
+
+  payments Payment[]
+
+  @@index([merchantId])
+  @@index([simulationRunId])
+}
+
+model Payment {
+  id       String @id
+  amount   Int // minor units (paise), never floats
+  currency String @default("INR")
+
+  // status: "created" | "failed" | "retrying" | "recovered" | "failed_final"
+  //       | "escalated" | "stopped"
+  status String
+
+  // failureCategory (null until the payment first fails):
+  // "temporary_bank_failure" | "insufficient_funds"
+  // | "authentication_failure" | "invalid_instrument"
+  // | "repeated_failure" | "unknown"
+  failureCategory String?
+
+  attemptCount Int @default(0)
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  merchantId String
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  simulationRunId String
+  simulationRun   SimulationRun @relation(fields: [simulationRunId], references: [id])
+
+  recoveryCase RecoveryCase?
+  groundTruth  GroundTruth?
+  auditEvents  AuditEvent[]
+
+  @@index([merchantId])
+  @@index([customerId])
+  @@index([simulationRunId])
+  @@index([status])
+}
+
+model RecoveryCase {
+  id String @id
+
+  // status: "open" | "in_progress" | "recovered" | "failed" | "escalated" | "stopped"
+  status String
+
+  openedAt              DateTime
+  closedAt              DateTime?
+  recoveryWindowEndsAt  DateTime
+
+  paymentId String  @unique
+  payment   Payment @relation(fields: [paymentId], references: [id])
+
+  simulationRunId String
+  simulationRun   SimulationRun @relation(fields: [simulationRunId], references: [id])
+
+  attempts RecoveryAttempt[]
+
+  @@index([simulationRunId])
+  @@index([status])
+}
+
+model RecoveryAttempt {
+  id            String @id
+  attemptNumber Int
+
+  // strategy identifier, e.g. "baseline_deterministic_retry"
+  strategy String
+
+  scheduledAt DateTime
+  executedAt  DateTime?
+
+  // outcome: "pending" | "success" | "failure" | "blocked"
+  outcome String
+
+  amountRecovered Int?
+
+  recoveryCaseId String
+  recoveryCase   RecoveryCase @relation(fields: [recoveryCaseId], references: [id])
+
+  simulationRunId String
+  simulationRun   SimulationRun @relation(fields: [simulationRunId], references: [id])
+
+  @@index([recoveryCaseId])
+  @@index([simulationRunId])
+}
+
+model RecoveryPolicy {
+  id                  String @id
+  name                String @unique
+  maxRetries          Int
+  retryIntervalHours  String // JSON-encoded array of hour offsets, e.g. "[1,24,72]"
+  recoveryWindowDays  Int
+  createdAt           DateTime
+}
+
+// -----------------------------------------------------------------------------
+// Event model
+// -----------------------------------------------------------------------------
+model AuditEvent {
+  id String @id
+
+  // entityType: "Payment" | "RecoveryCase" | "RecoveryAttempt"
+  entityType String
+  entityId   String
+
+  // eventType (11 canonical event types):
+  // "payment_created" | "payment_failed" | "recovery_started"
+  // | "recovery_decision" | "action_requested" | "action_blocked"
+  // | "action_executed" | "payment_recovered" | "recovery_failed"
+  // | "escalation" | "stopped"
+  eventType String
+
+  payload    String // JSON-encoded metadata blob
+  occurredAt DateTime
+
+  paymentId String?
+  payment   Payment? @relation(fields: [paymentId], references: [id])
+
+  simulationRunId String
+  simulationRun   SimulationRun @relation(fields: [simulationRunId], references: [id])
+
+  @@index([simulationRunId])
+  @@index([entityType, entityId])
+  @@index([eventType])
+}
+
+// -----------------------------------------------------------------------------
+// HIDDEN GROUND TRUTH — evaluation-only, ISOLATED from all agent-facing surfaces
+// -----------------------------------------------------------------------------
+// CRITICAL: This model must never be joined into, exported from, or reachable
+// through any agent-facing query, type, schema, or serializer. It exists only
+// for offline evaluation of recovery strategies and outcome simulation.
+// See src/simulation/groundTruth.ts and src/domain/agentContext.ts.
+model GroundTruth {
+  id String @id
+
+  paymentId String  @unique
+  payment   Payment @relation(fields: [paymentId], references: [id])
+
+  recoverable Boolean
+
+  // 0.0 – 1.0
+  recoveryProbability Float
+
+  // bestAction: "retry_immediate" | "retry_delayed" | "prompt_instrument_update"
+  // | "escalate_to_human" | "no_action"
+  bestAction String
+
+  // minor units (paise); the true recoverable amount used internally by the
+  // outcome simulator. Never exposed to agent-facing interfaces.
+  recoveredAmount Int
+
+  simulationRunId String
+  simulationRun   SimulationRun @relation(fields: [simulationRunId], references: [id])
+
+  @@index([simulationRunId])
+}
