@@ -16,6 +16,11 @@ export const GENERATOR_VERSION = "1.0.0";
 /** Bump when the shape of generated records (fields, relations) changes. */
 export const DATASET_VERSION = "r2s-dataset-v1";
 
+/** Bump when the Recovery Assessment Engine's scoring/candidate-action
+ * heuristics change in a way that would change output for the same input
+ * features (Aug 30). */
+export const ASSESSMENT_ENGINE_VERSION = "1.0.0";
+
 export function buildSimulationRun(
   id: string,
   seed: string,
