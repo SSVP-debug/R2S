@@ -288,7 +288,24 @@ function runBaselineRecoveryLoop(args: {
     });
 
     // ---- Outcome simulation: uses hidden ground truth internally only ----
-    const attemptResult = simulateAttemptOutcome(rng, groundTruth, attemptNumber, payment.amount);
+    // The baseline strategy's only concept of "retry" maps to RETRY_NOW —
+    // this is the reference/neutral action (multiplier 1.0), so this call
+    // produces numerically identical results to the pre-Sep-1 formula.
+    const attemptResult = simulateAttemptOutcome(
+      rng,
+      groundTruth,
+      "RETRY_NOW",
+      attemptNumber,
+      payment.amount,
+    );
+    if (!attemptResult) {
+      // Defensive: RETRY_NOW is always a genuine recovery action, so
+      // simulateAttemptOutcome never returns null here. This should be
+      // unreachable.
+      throw new Error(
+        `simulateAttemptOutcome unexpectedly returned null for RETRY_NOW on payment ${payment.id}`,
+      );
+    }
     const outcome: RecoveryAttemptOutcome = attemptResult.success ? "success" : "failure";
     repo.updateRecoveryAttempt(attemptId, {
       executedAt: now,

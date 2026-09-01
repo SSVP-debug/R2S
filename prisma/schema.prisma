@@ -173,8 +173,29 @@ model RecoveryAttempt {
   id            String @id
   attemptNumber Int
 
-  // strategy identifier, e.g. "baseline_deterministic_retry"
+  // strategy identifier, e.g. "baseline_deterministic_retry" or
+  // "ai_orchestrated" (Sep 1)
   strategy String
+
+  // action (Sep 1, nullable): which concrete RecoveryAction (RETRY_NOW,
+  // RETRY_LATER, SEND_PAYMENT_LINK, SEND_REMINDER, OFFER_INCENTIVE,
+  // ESCALATE, STOP — see src/ai/types.ts) this attempt represents. Null
+  // for attempts created by the Aug 29 baseline simulation pipeline, which
+  // predates this field and only ever performs a single implicit "retry"
+  // action captured by `strategy` instead.
+  action String?
+
+  // idempotencyKey (Sep 1, nullable, UNIQUE when non-null — Sep 1
+  // correction pass Issue 3): deterministic key
+  // (paymentId + recoveryCaseId + attemptNumber) used by
+  // src/execution/recoveryExecutor.ts / src/orchestration/recoveryOrchestrator.ts
+  // to guarantee a given attempt is never executed twice, DURABLY (across
+  // process restarts, not just within one in-memory executor instance).
+  // Null for Aug 29 baseline-generated attempts. SQLite (like standard
+  // SQL) treats each NULL as distinct under a UNIQUE constraint, so any
+  // number of Aug-29-style null-idempotencyKey rows coexist freely; only
+  // a genuine duplicate non-null key is rejected.
+  idempotencyKey String? @unique
 
   scheduledAt DateTime
   executedAt  DateTime?

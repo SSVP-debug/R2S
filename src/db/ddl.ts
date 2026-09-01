@@ -78,6 +78,8 @@ CREATE TABLE IF NOT EXISTS RecoveryAttempt (
   id               TEXT PRIMARY KEY,
   attemptNumber    INTEGER NOT NULL,
   strategy         TEXT NOT NULL,
+  action           TEXT,
+  idempotencyKey   TEXT,
   scheduledAt      TEXT NOT NULL,
   executedAt       TEXT,
   outcome          TEXT NOT NULL,
@@ -87,6 +89,11 @@ CREATE TABLE IF NOT EXISTS RecoveryAttempt (
 );
 CREATE INDEX IF NOT EXISTS idx_recattempt_case ON RecoveryAttempt(recoveryCaseId);
 CREATE INDEX IF NOT EXISTS idx_recattempt_simrun ON RecoveryAttempt(simulationRunId);
+-- Sep 1 correction (Issue 3): durable idempotency boundary. SQLite treats
+-- each NULL as distinct under UNIQUE, so Aug 29's null-idempotencyKey
+-- baseline attempts are unaffected; only a genuine duplicate non-null key
+-- is rejected.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_recattempt_idempotency_unique ON RecoveryAttempt(idempotencyKey);
 
 CREATE TABLE IF NOT EXISTS RecoveryPolicy (
   id                  TEXT PRIMARY KEY,

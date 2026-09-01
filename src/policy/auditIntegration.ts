@@ -32,10 +32,15 @@ export function buildAiDecisionAuditEvent(
     simulationRunId: string;
     occurredAt: Date;
     result: AgentDecisionResult;
+    /** Sep 1 correction pass follow-through: optional explicit id — see
+     * src/simulation/events.ts::createEvent's `id` param doc. Omitted by
+     * every pre-existing caller; unaffected. */
+    id?: string;
   },
 ): AuditEvent {
   const { result } = params;
   return createEvent(ids, {
+    id: params.id,
     entityType: "RecoveryCase",
     entityId: params.recoveryCaseId,
     eventType: "recovery_decision",
@@ -69,10 +74,15 @@ export function buildPolicyDecisionAuditEvent(
     simulationRunId: string;
     occurredAt: Date;
     policyResult: PolicyResult;
+    /** Sep 1 correction pass follow-through: optional explicit id — see
+     * src/simulation/events.ts::createEvent's `id` param doc. Omitted by
+     * every pre-existing caller; unaffected. */
+    id?: string;
   },
 ): AuditEvent {
   const { policyResult } = params;
   return createEvent(ids, {
+    id: params.id,
     entityType: "RecoveryCase",
     entityId: params.recoveryCaseId,
     eventType: POLICY_DECISION_EVENT_TYPE[policyResult.decision],

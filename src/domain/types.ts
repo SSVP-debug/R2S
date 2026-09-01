@@ -108,6 +108,12 @@ export interface RecoveryAttempt {
   id: string;
   attemptNumber: number;
   strategy: string;
+  /** Sep 1: which concrete RecoveryAction this attempt represents. Null
+   * for Aug 29 baseline-generated attempts (predates this field). */
+  action?: string | null;
+  /** Sep 1: idempotency key used by the recovery executor. Null for
+   * Aug 29 baseline-generated attempts. */
+  idempotencyKey?: string | null;
   scheduledAt: Date;
   executedAt: Date | null;
   outcome: RecoveryAttemptOutcome;

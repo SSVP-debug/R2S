@@ -77,6 +77,12 @@ export interface R2SRepository {
   getCustomer(id: string): Customer | null;
   getRecoveryCaseByPayment(paymentId: string): RecoveryCase | null;
   listRecoveryAttemptsByCase(recoveryCaseId: string): RecoveryAttempt[];
+  /** Sep 1 correction (Issue 3): durable idempotency lookup. Returns the
+   * persisted RecoveryAttempt for a given idempotencyKey, or null if none
+   * exists yet — the authoritative, cross-process idempotency boundary
+   * (in-memory executor caches are a fast-path optimization on top of
+   * this, not a replacement for it). */
+  getRecoveryAttemptByIdempotencyKey(idempotencyKey: string): RecoveryAttempt | null;
   listPaymentsBySimulationRun(simulationRunId: string): Payment[];
   listAuditEventsByPayment(paymentId: string): AuditEvent[];
   countRows(table: string): number;
@@ -209,13 +215,15 @@ export class SqliteRepository implements R2SRepository {
     this.db
       .prepare(
         `INSERT INTO RecoveryAttempt
-          (id, attemptNumber, strategy, scheduledAt, executedAt, outcome, amountRecovered, recoveryCaseId, simulationRunId)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          (id, attemptNumber, strategy, action, idempotencyKey, scheduledAt, executedAt, outcome, amountRecovered, recoveryCaseId, simulationRunId)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         attempt.id,
         attempt.attemptNumber,
         attempt.strategy,
+        attempt.action ?? null,
+        attempt.idempotencyKey ?? null,
         toIso(attempt.scheduledAt),
         toIsoOrNull(attempt.executedAt),
         attempt.outcome,
@@ -406,10 +414,24 @@ export class SqliteRepository implements R2SRepository {
     const rows = this.db
       .prepare(`SELECT * FROM RecoveryAttempt WHERE recoveryCaseId = ? ORDER BY attemptNumber ASC`)
       .all(recoveryCaseId) as Record<string, unknown>[];
-    return rows.map((row) => ({
+    return rows.map((row) => this.mapRecoveryAttemptRow(row));
+  }
+
+  getRecoveryAttemptByIdempotencyKey(idempotencyKey: string): RecoveryAttempt | null {
+    const row = this.db
+      .prepare(`SELECT * FROM RecoveryAttempt WHERE idempotencyKey = ?`)
+      .get(idempotencyKey) as Record<string, unknown> | undefined;
+    if (!row) return null;
+    return this.mapRecoveryAttemptRow(row);
+  }
+
+  private mapRecoveryAttemptRow(row: Record<string, unknown>): RecoveryAttempt {
+    return {
       id: row.id as string,
       attemptNumber: row.attemptNumber as number,
       strategy: row.strategy as string,
+      action: (row.action as string | null) ?? null,
+      idempotencyKey: (row.idempotencyKey as string | null) ?? null,
       scheduledAt: fromIso(row.scheduledAt as string),
       executedAt: fromIsoOrNull(row.executedAt as string | null),
       outcome: assertOneOf(
@@ -420,7 +442,7 @@ export class SqliteRepository implements R2SRepository {
       amountRecovered: row.amountRecovered as number | null,
       recoveryCaseId: row.recoveryCaseId as string,
       simulationRunId: row.simulationRunId as string,
-    }));
+    };
   }
 
   listPaymentsBySimulationRun(simulationRunId: string): Payment[] {

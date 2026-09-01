@@ -25,10 +25,22 @@ export function createEvent(
     paymentId: string | null;
     simulationRunId: string;
     payload?: Record<string, unknown>;
+    /** Sep 1 correction pass (Issue 3 follow-through): optional explicit
+     * id, overriding the default `ids.next("evt")` sequential id. Every
+     * EXISTING caller (Aug 29's runSimulation.ts, Aug 31's audit
+     * builders) omits this and is completely unaffected — behavior is
+     * identical to before. This exists only because
+     * src/orchestration/recoveryOrchestrator.ts cannot safely assume its
+     * IdSequence is shared across independent calls against the same
+     * database (e.g. a caller legitimately constructs a fresh IdSequence
+     * after a process restart — durable idempotency must survive that),
+     * so it supplies its own collision-resistant id instead of relying
+     * on a per-call-reset sequential counter. */
+    id?: string;
   },
 ): AuditEvent {
   const event: AuditEvent = {
-    id: ids.next("evt"),
+    id: params.id ?? ids.next("evt"),
     entityType: params.entityType,
     entityId: params.entityId,
     eventType: params.eventType,
