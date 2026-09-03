@@ -167,9 +167,22 @@ function emitAndPersist(
   repo.insertAuditEvents([event]);
 }
 
-type LoopOutcome = "recovered" | "failed_final" | "stopped";
+export type LoopOutcome = "recovered" | "failed_final" | "stopped";
 
-function runBaselineRecoveryLoop(args: {
+/**
+ * The Aug 29 baseline deterministic-retry decision loop for a single
+ * already-opened failed payment / recovery case. Exported (Sep 2,
+ * purely additive — no change to this function's body) so the
+ * evaluation harness's baseline strategy adapter
+ * (src/evaluation/strategies/baselineStrategy.ts) can reuse this EXACT
+ * loop against its own independent repository, rather than
+ * reimplementing or duplicating baseline decision logic. The caller is
+ * responsible for having already inserted the Payment (status
+ * "failed") and RecoveryCase (status "open") rows into `repo` before
+ * calling this — mirroring exactly what runSimulation()'s own call site
+ * above does.
+ */
+export function runBaselineRecoveryLoop(args: {
   repo: R2SRepository;
   ids: IdSequence;
   rng: ReturnType<typeof createRng>;

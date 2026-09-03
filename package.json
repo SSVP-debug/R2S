@@ -8,6 +8,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seed": "tsx src/seed.ts",
+    "evaluate": "tsx src/cli/evaluate.ts",
     "prisma:validate": "prisma validate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"

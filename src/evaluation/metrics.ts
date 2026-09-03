@@ -40,7 +40,10 @@
 
 import type { EvaluationRecord, RecoveryMetrics } from "./types.js";
 
-function safeDivide(numerator: number, denominator: number): number {
+// Exported (Sep 2, additive) so the multi-strategy Sep 2 metrics module
+// (src/evaluation/strategyMetrics.ts) can reuse the exact same
+// zero-denominator convention rather than redefining it.
+export function safeDivide(numerator: number, denominator: number): number {
   return denominator === 0 ? 0 : numerator / denominator;
 }
 

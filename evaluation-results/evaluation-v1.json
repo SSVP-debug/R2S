@@ -1,0 +1,571 @@
+{
+  "evaluationVersion": "r2s-eval-v1",
+  "generatorVersion": "1.0.0",
+  "datasetVersion": "r2s-dataset-v1",
+  "assessmentEngineVersion": "1.0.0",
+  "config": {
+    "seeds": [
+      "evaluation-001",
+      "evaluation-002",
+      "evaluation-003",
+      "evaluation-004",
+      "evaluation-005"
+    ],
+    "generatorOptions": {
+      "merchantCount": 70,
+      "customersPerMerchant": {
+        "min": 8,
+        "max": 20
+      },
+      "paymentsPerCustomer": {
+        "min": 2,
+        "max": 6
+      },
+      "baseFailureRate": 0.3,
+      "simulatedNow": "2026-08-29T00:00:00.000Z"
+    }
+  },
+  "seedResults": [
+    {
+      "seed": "evaluation-001",
+      "cohortSize": 1014,
+      "droppedByMaxCohortSize": 0,
+      "baselineRngSeed": "evaluation-001:baseline",
+      "r2sRngSeed": "evaluation-001:r2s",
+      "baselineMetrics": {
+        "eligibleFailedPayments": 1014,
+        "recoveredPayments": 578,
+        "recoveryRate": 0.5700197238658777,
+        "recoveredRevenue": 86611127,
+        "executedRecoveryAttempts": 2095,
+        "recoveryEfficiency": 41341.82673031026,
+        "policyBlocks": 0,
+        "escalations": 0,
+        "actionDistribution": {
+          "RETRY_NOW": 2095,
+          "STOP": 436
+        },
+        "averageAttemptsPerRecoveredPayment": 3.624567474048443,
+        "groundTruthLabelAgreementRate": null,
+        "bestAvailableActionAgreementRate": null
+      },
+      "r2sMetrics": {
+        "eligibleFailedPayments": 1014,
+        "recoveredPayments": 498,
+        "recoveryRate": 0.4911242603550296,
+        "recoveredRevenue": 75445042,
+        "executedRecoveryAttempts": 1115,
+        "recoveryEfficiency": 67663.71479820627,
+        "policyBlocks": 0,
+        "escalations": 485,
+        "actionDistribution": {
+          "RETRY_NOW": 458,
+          "RETRY_LATER": 305,
+          "ESCALATE": 485,
+          "SEND_PAYMENT_LINK": 352
+        },
+        "averageAttemptsPerRecoveredPayment": 2.2389558232931726,
+        "groundTruthLabelAgreementRate": 0.6074950690335306,
+        "bestAvailableActionAgreementRate": 0.6814595660749507
+      },
+      "comparison": {
+        "recoveryRate": {
+          "baseline": 0.5700197238658777,
+          "r2s": 0.4911242603550296,
+          "absoluteDelta": -0.07889546351084814,
+          "percentageDelta": -13.84083044982699
+        },
+        "recoveredRevenue": {
+          "baseline": 86611127,
+          "r2s": 75445042,
+          "absoluteDelta": -11166085,
+          "percentageDelta": -12.892206101878804
+        },
+        "executedRecoveryAttempts": {
+          "baseline": 2095,
+          "r2s": 1115,
+          "absoluteDelta": -980,
+          "percentageDelta": -46.77804295942721
+        },
+        "recoveryEfficiency": {
+          "baseline": 41341.82673031026,
+          "r2s": 67663.71479820627,
+          "absoluteDelta": 26321.888067896012,
+          "percentageDelta": 63.66890423010215
+        },
+        "policyBlocks": {
+          "baseline": 0,
+          "r2s": 0,
+          "absoluteDelta": 0,
+          "percentageDelta": null
+        },
+        "escalations": {
+          "baseline": 0,
+          "r2s": 485,
+          "absoluteDelta": 485,
+          "percentageDelta": null
+        },
+        "averageAttemptsPerRecoveredPayment": {
+          "baseline": 3.624567474048443,
+          "r2s": 2.2389558232931726,
+          "absoluteDelta": -1.3856116507552705,
+          "percentageDelta": -38.22833098503801
+        },
+        "incrementalRecoveredRevenue": -11166085
+      }
+    },
+    {
+      "seed": "evaluation-002",
+      "cohortSize": 1042,
+      "droppedByMaxCohortSize": 0,
+      "baselineRngSeed": "evaluation-002:baseline",
+      "r2sRngSeed": "evaluation-002:r2s",
+      "baselineMetrics": {
+        "eligibleFailedPayments": 1042,
+        "recoveredPayments": 602,
+        "recoveryRate": 0.5777351247600768,
+        "recoveredRevenue": 91165021,
+        "executedRecoveryAttempts": 2144,
+        "recoveryEfficiency": 42520.99860074627,
+        "policyBlocks": 0,
+        "escalations": 0,
+        "actionDistribution": {
+          "RETRY_NOW": 2144,
+          "STOP": 440
+        },
+        "averageAttemptsPerRecoveredPayment": 3.5614617940199333,
+        "groundTruthLabelAgreementRate": null,
+        "bestAvailableActionAgreementRate": null
+      },
+      "r2sMetrics": {
+        "eligibleFailedPayments": 1042,
+        "recoveredPayments": 534,
+        "recoveryRate": 0.5124760076775432,
+        "recoveredRevenue": 80818342,
+        "executedRecoveryAttempts": 1134,
+        "recoveryEfficiency": 71268.37918871253,
+        "policyBlocks": 0,
+        "escalations": 486,
+        "actionDistribution": {
+          "RETRY_LATER": 325,
+          "ESCALATE": 486,
+          "RETRY_NOW": 505,
+          "SEND_PAYMENT_LINK": 304
+        },
+        "averageAttemptsPerRecoveredPayment": 2.1235955056179776,
+        "groundTruthLabelAgreementRate": 0.6055662188099808,
+        "bestAvailableActionAgreementRate": 0.7005758157389635
+      },
+      "comparison": {
+        "recoveryRate": {
+          "baseline": 0.5777351247600768,
+          "r2s": 0.5124760076775432,
+          "absoluteDelta": -0.06525911708253362,
+          "percentageDelta": -11.295681063122927
+        },
+        "recoveredRevenue": {
+          "baseline": 91165021,
+          "r2s": 80818342,
+          "absoluteDelta": -10346679,
+          "percentageDelta": -11.349395729311574
+        },
+        "executedRecoveryAttempts": {
+          "baseline": 2144,
+          "r2s": 1134,
+          "absoluteDelta": -1010,
+          "percentageDelta": -47.10820895522388
+        },
+        "recoveryEfficiency": {
+          "baseline": 42520.99860074627,
+          "r2s": 71268.37918871253,
+          "absoluteDelta": 28747.380587966254,
+          "percentageDelta": 67.60749167227159
+        },
+        "policyBlocks": {
+          "baseline": 0,
+          "r2s": 0,
+          "absoluteDelta": 0,
+          "percentageDelta": null
+        },
+        "escalations": {
+          "baseline": 0,
+          "r2s": 486,
+          "absoluteDelta": 486,
+          "percentageDelta": null
+        },
+        "averageAttemptsPerRecoveredPayment": {
+          "baseline": 3.5614617940199333,
+          "r2s": 2.1235955056179776,
+          "absoluteDelta": -1.4378662884019557,
+          "percentageDelta": -40.372924702331034
+        },
+        "incrementalRecoveredRevenue": -10346679
+      }
+    },
+    {
+      "seed": "evaluation-003",
+      "cohortSize": 1070,
+      "droppedByMaxCohortSize": 0,
+      "baselineRngSeed": "evaluation-003:baseline",
+      "r2sRngSeed": "evaluation-003:r2s",
+      "baselineMetrics": {
+        "eligibleFailedPayments": 1070,
+        "recoveredPayments": 618,
+        "recoveryRate": 0.577570093457944,
+        "recoveredRevenue": 94792913,
+        "executedRecoveryAttempts": 2196,
+        "recoveryEfficiency": 43166.17167577414,
+        "policyBlocks": 0,
+        "escalations": 0,
+        "actionDistribution": {
+          "RETRY_NOW": 2196,
+          "STOP": 452
+        },
+        "averageAttemptsPerRecoveredPayment": 3.5533980582524274,
+        "groundTruthLabelAgreementRate": null,
+        "bestAvailableActionAgreementRate": null
+      },
+      "r2sMetrics": {
+        "eligibleFailedPayments": 1070,
+        "recoveredPayments": 534,
+        "recoveryRate": 0.49906542056074765,
+        "recoveredRevenue": 82080902,
+        "executedRecoveryAttempts": 1203,
+        "recoveryEfficiency": 68230.17622610141,
+        "policyBlocks": 0,
+        "escalations": 503,
+        "actionDistribution": {
+          "SEND_PAYMENT_LINK": 362,
+          "ESCALATE": 503,
+          "RETRY_NOW": 490,
+          "RETRY_LATER": 351
+        },
+        "averageAttemptsPerRecoveredPayment": 2.252808988764045,
+        "groundTruthLabelAgreementRate": 0.6093457943925233,
+        "bestAvailableActionAgreementRate": 0.6757009345794392
+      },
+      "comparison": {
+        "recoveryRate": {
+          "baseline": 0.577570093457944,
+          "r2s": 0.49906542056074765,
+          "absoluteDelta": -0.07850467289719631,
+          "percentageDelta": -13.592233009708746
+        },
+        "recoveredRevenue": {
+          "baseline": 94792913,
+          "r2s": 82080902,
+          "absoluteDelta": -12712011,
+          "percentageDelta": -13.41029682250613
+        },
+        "executedRecoveryAttempts": {
+          "baseline": 2196,
+          "r2s": 1203,
+          "absoluteDelta": -993,
+          "percentageDelta": -45.21857923497268
+        },
+        "recoveryEfficiency": {
+          "baseline": 43166.17167577414,
+          "r2s": 68230.17622610141,
+          "absoluteDelta": 25064.00455032727,
+          "percentageDelta": 58.06399682275687
+        },
+        "policyBlocks": {
+          "baseline": 0,
+          "r2s": 0,
+          "absoluteDelta": 0,
+          "percentageDelta": null
+        },
+        "escalations": {
+          "baseline": 0,
+          "r2s": 503,
+          "absoluteDelta": 503,
+          "percentageDelta": null
+        },
+        "averageAttemptsPerRecoveredPayment": {
+          "baseline": 3.5533980582524274,
+          "r2s": 2.252808988764045,
+          "absoluteDelta": -1.3005890694883826,
+          "percentageDelta": -36.6012770921594
+        },
+        "incrementalRecoveredRevenue": -12712011
+      }
+    },
+    {
+      "seed": "evaluation-004",
+      "cohortSize": 1014,
+      "droppedByMaxCohortSize": 0,
+      "baselineRngSeed": "evaluation-004:baseline",
+      "r2sRngSeed": "evaluation-004:r2s",
+      "baselineMetrics": {
+        "eligibleFailedPayments": 1014,
+        "recoveredPayments": 567,
+        "recoveryRate": 0.5591715976331361,
+        "recoveredRevenue": 83693669,
+        "executedRecoveryAttempts": 2119,
+        "recoveryEfficiency": 39496.77630957999,
+        "policyBlocks": 0,
+        "escalations": 0,
+        "actionDistribution": {
+          "RETRY_NOW": 2119,
+          "STOP": 447
+        },
+        "averageAttemptsPerRecoveredPayment": 3.7372134038800704,
+        "groundTruthLabelAgreementRate": null,
+        "bestAvailableActionAgreementRate": null
+      },
+      "r2sMetrics": {
+        "eligibleFailedPayments": 1014,
+        "recoveredPayments": 523,
+        "recoveryRate": 0.5157790927021696,
+        "recoveredRevenue": 78601197,
+        "executedRecoveryAttempts": 1122,
+        "recoveryEfficiency": 70054.54278074867,
+        "policyBlocks": 0,
+        "escalations": 468,
+        "actionDistribution": {
+          "SEND_PAYMENT_LINK": 341,
+          "ESCALATE": 468,
+          "RETRY_LATER": 316,
+          "RETRY_NOW": 465
+        },
+        "averageAttemptsPerRecoveredPayment": 2.1453154875717018,
+        "groundTruthLabelAgreementRate": 0.6143984220907298,
+        "bestAvailableActionAgreementRate": 0.6785009861932939
+      },
+      "comparison": {
+        "recoveryRate": {
+          "baseline": 0.5591715976331361,
+          "r2s": 0.5157790927021696,
+          "absoluteDelta": -0.04339250493096647,
+          "percentageDelta": -7.760141093474428
+        },
+        "recoveredRevenue": {
+          "baseline": 83693669,
+          "r2s": 78601197,
+          "absoluteDelta": -5092472,
+          "percentageDelta": -6.084656176323206
+        },
+        "executedRecoveryAttempts": {
+          "baseline": 2119,
+          "r2s": 1122,
+          "absoluteDelta": -997,
+          "percentageDelta": -47.05049551675319
+        },
+        "recoveryEfficiency": {
+          "baseline": 39496.77630957999,
+          "r2s": 70054.54278074867,
+          "absoluteDelta": 30557.76647116868,
+          "percentageDelta": 77.36774827305807
+        },
+        "policyBlocks": {
+          "baseline": 0,
+          "r2s": 0,
+          "absoluteDelta": 0,
+          "percentageDelta": null
+        },
+        "escalations": {
+          "baseline": 0,
+          "r2s": 468,
+          "absoluteDelta": 468,
+          "percentageDelta": null
+        },
+        "averageAttemptsPerRecoveredPayment": {
+          "baseline": 3.7372134038800704,
+          "r2s": 2.1453154875717018,
+          "absoluteDelta": -1.5918979163083686,
+          "percentageDelta": -42.5958526921588
+        },
+        "incrementalRecoveredRevenue": -5092472
+      }
+    },
+    {
+      "seed": "evaluation-005",
+      "cohortSize": 989,
+      "droppedByMaxCohortSize": 0,
+      "baselineRngSeed": "evaluation-005:baseline",
+      "r2sRngSeed": "evaluation-005:r2s",
+      "baselineMetrics": {
+        "eligibleFailedPayments": 989,
+        "recoveredPayments": 543,
+        "recoveryRate": 0.5490394337714863,
+        "recoveredRevenue": 83954508,
+        "executedRecoveryAttempts": 2075,
+        "recoveryEfficiency": 40460.00385542169,
+        "policyBlocks": 0,
+        "escalations": 0,
+        "actionDistribution": {
+          "RETRY_NOW": 2075,
+          "STOP": 446
+        },
+        "averageAttemptsPerRecoveredPayment": 3.8213627992633517,
+        "groundTruthLabelAgreementRate": null,
+        "bestAvailableActionAgreementRate": null
+      },
+      "r2sMetrics": {
+        "eligibleFailedPayments": 989,
+        "recoveredPayments": 474,
+        "recoveryRate": 0.4792719919110212,
+        "recoveredRevenue": 72549511,
+        "executedRecoveryAttempts": 1076,
+        "recoveryEfficiency": 67425.19609665427,
+        "policyBlocks": 0,
+        "escalations": 491,
+        "actionDistribution": {
+          "RETRY_NOW": 453,
+          "SEND_PAYMENT_LINK": 312,
+          "ESCALATE": 491,
+          "RETRY_LATER": 311
+        },
+        "averageAttemptsPerRecoveredPayment": 2.270042194092827,
+        "groundTruthLabelAgreementRate": 0.5793731041456016,
+        "bestAvailableActionAgreementRate": 0.6552072800808898
+      },
+      "comparison": {
+        "recoveryRate": {
+          "baseline": 0.5490394337714863,
+          "r2s": 0.4792719919110212,
+          "absoluteDelta": -0.06976744186046513,
+          "percentageDelta": -12.707182320441992
+        },
+        "recoveredRevenue": {
+          "baseline": 83954508,
+          "r2s": 72549511,
+          "absoluteDelta": -11404997,
+          "percentageDelta": -13.584734485014193
+        },
+        "executedRecoveryAttempts": {
+          "baseline": 2075,
+          "r2s": 1076,
+          "absoluteDelta": -999,
+          "percentageDelta": -48.144578313253014
+        },
+        "recoveryEfficiency": {
+          "baseline": 40460.00385542169,
+          "r2s": 67425.19609665427,
+          "absoluteDelta": 26965.19224123258,
+          "percentageDelta": 66.64653898103673
+        },
+        "policyBlocks": {
+          "baseline": 0,
+          "r2s": 0,
+          "absoluteDelta": 0,
+          "percentageDelta": null
+        },
+        "escalations": {
+          "baseline": 0,
+          "r2s": 491,
+          "absoluteDelta": 491,
+          "percentageDelta": null
+        },
+        "averageAttemptsPerRecoveredPayment": {
+          "baseline": 3.8213627992633517,
+          "r2s": 2.270042194092827,
+          "absoluteDelta": -1.5513206051705248,
+          "percentageDelta": -40.596004270245544
+        },
+        "incrementalRecoveredRevenue": -11404997
+      }
+    }
+  ],
+  "aggregate": {
+    "recoveryRate": {
+      "baseline": {
+        "mean": 0.5667071946977041,
+        "median": 0.5700197238658777,
+        "minimum": 0.5490394337714863,
+        "maximum": 0.5777351247600768,
+        "standardDeviation": 0.01113126820889084,
+        "sampleCount": 5
+      },
+      "r2s": {
+        "mean": 0.4995433546413023,
+        "median": 0.49906542056074765,
+        "minimum": 0.4792719919110212,
+        "maximum": 0.5157790927021696,
+        "standardDeviation": 0.013512145806392265,
+        "sampleCount": 5
+      }
+    },
+    "recoveredRevenue": {
+      "baseline": {
+        "mean": 88043447.6,
+        "median": 86611127,
+        "minimum": 83693669,
+        "maximum": 94792913,
+        "standardDeviation": 4312564.130538471,
+        "sampleCount": 5
+      },
+      "r2s": {
+        "mean": 77898998.8,
+        "median": 78601197,
+        "minimum": 72549511,
+        "maximum": 82080902,
+        "standardDeviation": 3496938.2352067586,
+        "sampleCount": 5
+      }
+    },
+    "executedRecoveryAttempts": {
+      "baseline": {
+        "mean": 2125.8,
+        "median": 2119,
+        "minimum": 2075,
+        "maximum": 2196,
+        "standardDeviation": 42.03522332520668,
+        "sampleCount": 5
+      },
+      "r2s": {
+        "mean": 1130,
+        "median": 1122,
+        "minimum": 1076,
+        "maximum": 1203,
+        "standardDeviation": 41.352146256270665,
+        "sampleCount": 5
+      }
+    },
+    "recoveryEfficiency": {
+      "baseline": {
+        "mean": 41397.15543436647,
+        "median": 41341.82673031026,
+        "minimum": 39496.77630957999,
+        "maximum": 43166.17167577414,
+        "standardDeviation": 1333.0564196850905,
+        "sampleCount": 5
+      },
+      "r2s": {
+        "mean": 68928.40181808463,
+        "median": 68230.17622610141,
+        "minimum": 67425.19609665427,
+        "maximum": 71268.37918871253,
+        "standardDeviation": 1489.3130791966225,
+        "sampleCount": 5
+      }
+    },
+    "groundTruthLabelAgreementRate": {
+      "r2s": {
+        "mean": 0.6032357216944731,
+        "median": 0.6074950690335306,
+        "minimum": 0.5793731041456016,
+        "maximum": 0.6143984220907298,
+        "standardDeviation": 0.012287690111293367,
+        "sampleCount": 5
+      }
+    },
+    "bestAvailableActionAgreementRate": {
+      "r2s": {
+        "mean": 0.6782889165335074,
+        "median": 0.6785009861932939,
+        "minimum": 0.6552072800808898,
+        "maximum": 0.7005758157389635,
+        "standardDeviation": 0.014465569191530673,
+        "sampleCount": 5
+      }
+    }
+  },
+  "methodology": {
+    "fairness": "Each seed builds ONE initial synthetic world (merchants, customers, payments, ground truth, opened recovery cases) via buildInitialWorld(), then materializes byte-identical copies into two fully independent SqliteRepository(':memory:') instances — one per strategy. Only the decision strategy differs; mutating one repository cannot affect the other.",
+    "temporalFairness": "R2S calls the Sep 1 orchestrator repeatedly per payment, but EVERY cycle — including RETRY_LATER — consumes exactly one decision opportunity from a shared budget of BASELINE_RETRY_POLICY.maxRetries (3), guaranteeing R2S never receives more decision opportunities than the baseline for any payment. RETRY_LATER changes WHEN the next opportunity occurs (its own approved delayHours) but not HOW MANY opportunities exist. Immediate-executing actions and BLOCK use the gaps between BASELINE_RETRY_POLICY.retryIntervalHours' cumulative offsets ([1,24,72]h -> [1,23,48]h gaps), applied additively so time never repeats or goes backward. If the opportunity budget is exhausted without the payment reaching a terminal/escalated state on its own, it is explicitly transitioned to 'stopped' via the existing lifecycle composer, mirroring the baseline's own stop_max_retries_reached termination.",
+    "rngStrategy": "Baseline and R2S use independently seeded RNG streams (seed+':baseline', seed+':r2s') for outcome simulation, since the two strategies consume different numbers of random draws over different attempt histories. Both call the exact same simulateAttemptOutcome() model/parameters — only the random draws differ, which is unavoidable and correct for a fair comparison of different decision sequences.",
+    "groundTruthBoundary": "GroundTruth is read in exactly two places: (1) internally, by the unmodified simulateAttemptOutcome() during outcome simulation (as it already was pre-Sep-2), and (2) in the evaluation layer (strategyMetrics.ts's summarizeR2sPayments), strictly AFTER a payment's R2S decisions are all complete, solely to compute the evaluation-only decision-quality metrics. It is never placed in AgentPaymentContext, RecoveryAssessment, AgentDecisionRequest, or any AI-facing input.",
+    "decisionQualityCaveat": "TWO evaluation-only decision-quality metrics are reported, deliberately kept distinct: groundTruthLabelAgreementRate measures agreement with GroundTruth.bestAction, a SYNTHETIC, CATEGORY-LEVEL LABEL (e.g. insufficient_funds -> retry_delayed) that is NOT derived from and is not guaranteed to align with the outcome model's actual per-action probabilities. bestAvailableActionAgreementRate measures agreement with the highest-performing action AMONG ONLY the actions the agent was actually offered as candidates for that specific payment (its translated candidate set, captured live during the real decision) — never compared against the full RecoveryAction vocabulary or an action that wasn't a genuine option for that payment. Neither is a real-world recovery-accuracy claim."
+  }
+}

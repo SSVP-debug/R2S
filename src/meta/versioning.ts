@@ -21,6 +21,15 @@ export const DATASET_VERSION = "r2s-dataset-v1";
  * features (Aug 30). */
 export const ASSESSMENT_ENGINE_VERSION = "1.0.0";
 
+/** Bump when the Sep 2 evaluation harness's methodology changes (cohort
+ * construction, temporal fairness model, metric formulas, RNG-seeding
+ * scheme) in a way that would change evaluation output for the same
+ * seed/dataset/assessment-engine versions. Does NOT change when the
+ * underlying simulated system (generator, assessment, AI, policy,
+ * executor, outcome model) changes — those are already covered by
+ * GENERATOR_VERSION / DATASET_VERSION / ASSESSMENT_ENGINE_VERSION. */
+export const EVALUATION_VERSION = "r2s-eval-v1";
+
 export function buildSimulationRun(
   id: string,
   seed: string,
