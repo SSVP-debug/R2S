@@ -106,4 +106,85 @@ describe("assessment: candidate action generation", () => {
       expect(c.rationale.length).toBeGreaterThan(0);
     }
   });
+
+  // ===========================================================================
+  // Sep 3 controlled experiment: low-confidence escalation override requires
+  // priorFailureCount >= 2 (raised from > 0). These tests pin the exact
+  // boundary the experiment changed and prove nothing else about candidate
+  // generation moved.
+  // ===========================================================================
+
+  it("does NOT override to escalate_to_human on a low-confidence score with exactly 1 prior failure", () => {
+    for (const failureCategory of ["insufficient_funds", "unknown", "temporary_bank_failure"] as const) {
+      const features = makeFeatures({
+        failureCategory,
+        priorFailureCount: 1,
+        attemptsMade: 1,
+      });
+      const candidates = generateCandidateActions(features, 0.1);
+      const top = candidates.find((c) => c.priority === 1);
+      expect(top?.action).not.toBe("escalate_to_human");
+    }
+  });
+
+  it("DOES override to escalate_to_human on a low-confidence score with exactly 2 prior failures", () => {
+    for (const failureCategory of ["insufficient_funds", "unknown", "temporary_bank_failure"] as const) {
+      const features = makeFeatures({
+        failureCategory,
+        priorFailureCount: 2,
+        attemptsMade: 2,
+      });
+      const candidates = generateCandidateActions(features, 0.1);
+      const top = candidates.find((c) => c.priority === 1);
+      expect(top?.action).toBe("escalate_to_human");
+    }
+  });
+
+  it("still overrides to escalate_to_human beyond 2 prior failures (>= 2, not == 2)", () => {
+    const features = makeFeatures({
+      failureCategory: "insufficient_funds",
+      priorFailureCount: 3,
+      attemptsMade: 3,
+    });
+    const candidates = generateCandidateActions(features, 0.1);
+    const top = candidates.find((c) => c.priority === 1);
+    expect(top?.action).toBe("escalate_to_human");
+  });
+
+  it("does not override on a high-confidence score even with 2+ prior failures (score gate unchanged)", () => {
+    const features = makeFeatures({
+      failureCategory: "insufficient_funds",
+      priorFailureCount: 3,
+      attemptsMade: 3,
+    });
+    const candidates = generateCandidateActions(features, 0.8);
+    const top = candidates.find((c) => c.priority === 1);
+    expect(top?.action).not.toBe("escalate_to_human");
+  });
+
+  it("leaves category-specific top-priority action selection unchanged with 1 prior failure and a non-low score", () => {
+    // Same fixture shape as the "prioritizes retry_immediate..." test above,
+    // but with a prior failure present, to confirm the override's
+    // priorFailureCount threshold change didn't alter unrelated
+    // category-priority behavior.
+    const features = makeFeatures({
+      failureCategory: "temporary_bank_failure",
+      priorFailureCount: 1,
+      attemptsMade: 1,
+    });
+    const candidates = generateCandidateActions(features, 0.6);
+    const top = candidates.find((c) => c.priority === 1);
+    expect(top?.action).toBe("retry_immediate");
+  });
+
+  it("priorities stay unique and sequential starting at 1 when the override does NOT fire (1 prior failure)", () => {
+    const features = makeFeatures({
+      failureCategory: "authentication_failure",
+      priorFailureCount: 1,
+      attemptsMade: 1,
+    });
+    const candidates = generateCandidateActions(features, 0.1);
+    const priorities = candidates.map((c) => c.priority).sort((a, b) => a - b);
+    expect(priorities).toEqual(Array.from({ length: candidates.length }, (_, i) => i + 1));
+  });
 });

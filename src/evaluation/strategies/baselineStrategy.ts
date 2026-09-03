@@ -24,11 +24,12 @@ import type { GroundTruth } from "../../domain/types.js";
 export interface BaselineStrategyParams {
   world: InitialWorld;
   repo: R2SRepository;
-  /** Seeded independently from the R2S strategy's RNG (Sep 2 correction,
-   * item 4) — the two strategies consume different numbers of random
-   * draws, so sharing one RNG stream would desync rather than being
-   * "fairer." Both still call the exact same outcome-simulation function
-   * with the exact same parameters/model. */
+  /** Retained for the run's own record-keeping / result labeling (Sep 2
+   * correction, item 4). NOT used to derive outcome-simulation randomness
+   * as of the Sep 3 methodology fix — see the payment-local RNG note in
+   * runBaselineStrategy() below, which instead uses `world.seed` (shared
+   * with R2S) so the two strategies draw from matched per-payment
+   * streams. */
   rngSeed: string;
 }
 
@@ -51,7 +52,6 @@ export interface BaselineStrategyResult {
  */
 export function runBaselineStrategy(params: BaselineStrategyParams): BaselineStrategyResult {
   const { world, repo, rngSeed } = params;
-  const rng = createRng(rngSeed);
   const ids = new IdSequence();
 
   const groundTruthByPaymentId = new Map<string, GroundTruth>(
@@ -76,10 +76,21 @@ export function runBaselineStrategy(params: BaselineStrategyParams): BaselineStr
 
     const recoveryCaseId = `case_${entry.paymentId}`;
 
+    // Payment-local, STRATEGY-SHARED RNG (Sep 3 methodology fix): keyed by
+    // world.seed (the base evaluation seed, identical for baseline and
+    // R2S — NOT the strategy-suffixed `rngSeed` above) + this payment's
+    // id. R2S derives the exact same key for the exact same payment (see
+    // r2sStrategy.ts), so both strategies' first executed attempt for a
+    // given payment draws the identical underlying random float — a
+    // matched/paired design (common random numbers), not independent
+    // sampling. Isolated per payment: a fresh Rng object per iteration
+    // means one payment's draw count can never shift another payment's
+    // stream, in either strategy.
+    const paymentRng = createRng(`${world.seed}:${entry.paymentId}`);
     const outcome = runBaselineRecoveryLoop({
       repo,
       ids,
-      rng,
+      rng: paymentRng,
       payment,
       groundTruth,
       recoveryCaseId,

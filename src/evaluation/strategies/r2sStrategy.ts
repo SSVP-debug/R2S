@@ -191,8 +191,11 @@ export interface R2sStrategyParams {
   repo: R2SRepository;
   provider: AIProvider;
   merchantPolicy: MerchantPolicy;
-  /** Seeded independently from the baseline strategy's RNG (Sep 2
-   * correction, item 4). */
+  /** Retained for the run's own record-keeping / result labeling (Sep 2
+   * correction, item 4). NOT used to derive outcome-simulation randomness
+   * as of the Sep 3 methodology fix — see runR2sStrategy() below, which
+   * instead uses `world.seed` (shared with baseline) so the two
+   * strategies draw from matched per-payment streams. */
   rngSeed: string;
 }
 
@@ -405,12 +408,18 @@ async function runR2sForPayment(params: {
  */
 export async function runR2sStrategy(params: R2sStrategyParams): Promise<R2sStrategyResult> {
   const { world, repo, provider, merchantPolicy, rngSeed } = params;
-  const rng = createRng(rngSeed);
   const ids = new IdSequence();
   const executor = new RecoveryExecutor();
 
   const perPayment: R2sStrategyPaymentResult[] = [];
   for (const entry of world.cohort) {
+    // Payment-local, STRATEGY-SHARED RNG (Sep 3 methodology fix): see
+    // baselineStrategy.ts for the full rationale. Keyed by world.seed
+    // (identical value baseline received for this seed) + this payment's
+    // id — the exact same key baseline computes for the same payment, so
+    // both strategies' first executed attempt draws the same underlying
+    // random float.
+    const paymentRng = createRng(`${world.seed}:${entry.paymentId}`);
     const result = await runR2sForPayment({
       paymentId: entry.paymentId,
       caseOpenedAt: entry.caseOpenedAt,
@@ -418,7 +427,7 @@ export async function runR2sStrategy(params: R2sStrategyParams): Promise<R2sStra
       repo,
       provider,
       merchantPolicy,
-      rng,
+      rng: paymentRng,
       ids,
       executor,
     });

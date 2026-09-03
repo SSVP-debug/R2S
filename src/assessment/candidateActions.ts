@@ -122,8 +122,12 @@ export function generateCandidateActions(
   }
 
   // Low-confidence override: if the score is low and we've already made at
-  // least one attempt, prefer escalation over yet another automated retry.
-  if (score < 0.3 && features.priorFailureCount > 0) {
+  // least two attempts, prefer escalation over yet another automated retry.
+  // (Sep 3 controlled experiment: raised from `> 0` to `>= 2` — requires
+  // repeated evidence of failure, not just a single failed attempt, before
+  // escalation is offered as the top candidate. No other threshold, prior,
+  // or effectiveness value changed.)
+  if (score < 0.3 && features.priorFailureCount >= 2) {
     candidates.unshift({
       action: "escalate_to_human",
       rationale: `Recovery score is low (${score.toFixed(2)}) after ${features.priorFailureCount} failed attempt(s); further automated retries have diminishing value.`,
