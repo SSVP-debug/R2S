@@ -1,0 +1,146 @@
+<svg viewBox="0 0 1500 520" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563"/>
+    </marker>
+    <marker id="arrowGT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1500" height="520" fill="#ffffff"/>
+  <text x="750" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#111827">R2S — Recovery Pipeline</text>
+  <text x="750" y="56" text-anchor="middle" font-size="13" fill="#6b7280">Simulation-first, policy-governed AI advisor for failed-payment recovery</text>
+
+  <!-- Node template dims -->
+  <!-- 10 nodes across, spaced -->
+  <g font-size="12">
+    <!-- 1 Simulation -->
+    <g transform="translate(20,120)">
+      <rect width="130" height="110" rx="10" fill="#eef2ff" stroke="#6366f1" stroke-width="1.5"/>
+      <text x="65" y="24" text-anchor="middle" font-weight="700" fill="#3730a3">Simulation</text>
+      <text x="65" y="46" text-anchor="middle" fill="#4338ca" font-size="10.5">Synthetic world</text>
+      <text x="65" y="60" text-anchor="middle" fill="#4338ca" font-size="10.5">Seeded RNG</text>
+      <text x="65" y="74" text-anchor="middle" fill="#b45309" font-size="10.5" font-weight="700">Hidden ground</text>
+      <text x="65" y="87" text-anchor="middle" fill="#b45309" font-size="10.5" font-weight="700">truth lives here</text>
+      <text x="65" y="103" text-anchor="middle" fill="#4338ca" font-size="10.5">only</text>
+    </g>
+
+    <!-- 2 Assessment -->
+    <g transform="translate(170,120)">
+      <rect width="130" height="110" rx="10" fill="#ecfeff" stroke="#06b6d4" stroke-width="1.5"/>
+      <text x="65" y="24" text-anchor="middle" font-weight="700" fill="#155e75">Assessment</text>
+      <text x="65" y="46" text-anchor="middle" fill="#0e7490" font-size="10.5">Observable-only</text>
+      <text x="65" y="60" text-anchor="middle" fill="#0e7490" font-size="10.5">features + score</text>
+      <text x="65" y="80" text-anchor="middle" fill="#0e7490" font-size="10.5">Ranked candidate</text>
+      <text x="65" y="94" text-anchor="middle" fill="#0e7490" font-size="10.5">actions</text>
+    </g>
+
+    <!-- 3 Agent-safe context -->
+    <g transform="translate(320,120)">
+      <rect width="130" height="110" rx="10" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
+      <text x="65" y="20" text-anchor="middle" font-weight="700" fill="#166534">Agent-safe</text>
+      <text x="65" y="35" text-anchor="middle" font-weight="700" fill="#166534">Context</text>
+      <text x="65" y="56" text-anchor="middle" fill="#15803d" font-size="10.5">Ground truth</text>
+      <text x="65" y="70" text-anchor="middle" fill="#15803d" font-size="10.5">structurally</text>
+      <text x="65" y="84" text-anchor="middle" fill="#15803d" font-size="10.5">excluded, not</text>
+      <text x="65" y="98" text-anchor="middle" fill="#15803d" font-size="10.5">just filtered</text>
+    </g>
+
+    <!-- 4 AI Decision -->
+    <g transform="translate(470,120)">
+      <rect width="130" height="110" rx="10" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5"/>
+      <text x="65" y="24" text-anchor="middle" font-weight="700" fill="#854d0e">AI Decision</text>
+      <text x="65" y="46" text-anchor="middle" fill="#a16207" font-size="10.5">MockAIProvider</text>
+      <text x="65" y="60" text-anchor="middle" fill="#a16207" font-size="10.5">Advisor only</text>
+      <text x="65" y="80" text-anchor="middle" fill="#a16207" font-size="10.5">No paid API,</text>
+      <text x="65" y="94" text-anchor="middle" fill="#a16207" font-size="10.5">₹0 cost</text>
+    </g>
+
+    <!-- 5 Policy -->
+    <g transform="translate(620,120)">
+      <rect width="130" height="110" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+      <text x="65" y="24" text-anchor="middle" font-weight="700" fill="#991b1b">Policy</text>
+      <text x="65" y="46" text-anchor="middle" fill="#b91c1c" font-size="10.5">Final authority</text>
+      <text x="65" y="66" text-anchor="middle" fill="#b91c1c" font-size="10.5">Approve /</text>
+      <text x="65" y="80" text-anchor="middle" fill="#b91c1c" font-size="10.5">modify / block</text>
+      <text x="65" y="100" text-anchor="middle" fill="#b91c1c" font-size="10.5">the AI's action</text>
+    </g>
+
+    <!-- 6 Idempotency -->
+    <g transform="translate(770,120)">
+      <rect width="130" height="110" rx="10" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+      <text x="65" y="24" text-anchor="middle" font-weight="700" fill="#6b21a8">Idempotency</text>
+      <text x="65" y="46" text-anchor="middle" fill="#7e22ce" font-size="10.5">SQLite-unique key</text>
+      <text x="65" y="66" text-anchor="middle" fill="#7e22ce" font-size="10.5">Reserve-before-</text>
+      <text x="65" y="80" text-anchor="middle" fill="#7e22ce" font-size="10.5">execute</text>
+      <text x="65" y="100" text-anchor="middle" fill="#7e22ce" font-size="10.5">Crash-safe</text>
+    </g>
+
+    <!-- 7 Executor -->
+    <g transform="translate(920,120)">
+      <rect width="130" height="110" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+      <text x="65" y="24" text-anchor="middle" font-weight="700" fill="#075985">Executor</text>
+      <text x="65" y="46" text-anchor="middle" fill="#0369a1" font-size="10.5">Simulation-only</text>
+      <text x="65" y="66" text-anchor="middle" fill="#0369a1" font-size="10.5">Never a real</text>
+      <text x="65" y="80" text-anchor="middle" fill="#0369a1" font-size="10.5">gateway</text>
+    </g>
+
+    <!-- 8 Outcome -->
+    <g transform="translate(1070,120)">
+      <rect width="130" height="110" rx="10" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
+      <text x="65" y="24" text-anchor="middle" font-weight="700" fill="#9d174d">Outcome</text>
+      <text x="65" y="46" text-anchor="middle" fill="#be185d" font-size="10.5">Action-conditioned</text>
+      <text x="65" y="66" text-anchor="middle" fill="#be185d" font-size="10.5">Payment-local</text>
+      <text x="65" y="80" text-anchor="middle" fill="#be185d" font-size="10.5">RNG (Sep 3 fix)</text>
+    </g>
+
+    <!-- 9 Lifecycle -->
+    <g transform="translate(1220,120)">
+      <rect width="130" height="110" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+      <text x="65" y="24" text-anchor="middle" font-weight="700" fill="#9a3412">Lifecycle</text>
+      <text x="65" y="46" text-anchor="middle" fill="#c2410c" font-size="10.5">open → retrying</text>
+      <text x="65" y="66" text-anchor="middle" fill="#c2410c" font-size="10.5">→ recovered /</text>
+      <text x="65" y="80" text-anchor="middle" fill="#c2410c" font-size="10.5">failed / stopped</text>
+    </g>
+
+    <!-- 10 Metrics -->
+    <g transform="translate(1370,120)">
+      <rect width="110" height="110" rx="10" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+      <text x="55" y="24" text-anchor="middle" font-weight="700" fill="#1e293b">Metrics /</text>
+      <text x="55" y="40" text-anchor="middle" font-weight="700" fill="#1e293b">Evaluation</text>
+      <text x="55" y="62" text-anchor="middle" fill="#334155" font-size="10.5">Baseline vs</text>
+      <text x="55" y="76" text-anchor="middle" fill="#334155" font-size="10.5">R2S, 5-seed</text>
+      <text x="55" y="90" text-anchor="middle" fill="#334155" font-size="10.5">aggregate</text>
+    </g>
+  </g>
+
+  <!-- main flow arrows -->
+  <g stroke="#4b5563" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <line x1="150" y1="175" x2="168" y2="175"/>
+    <line x1="300" y1="175" x2="318" y2="175"/>
+    <line x1="450" y1="175" x2="468" y2="175"/>
+    <line x1="600" y1="175" x2="618" y2="175"/>
+    <line x1="750" y1="175" x2="768" y2="175"/>
+    <line x1="900" y1="175" x2="918" y2="175"/>
+    <line x1="1050" y1="175" x2="1068" y2="175"/>
+    <line x1="1200" y1="175" x2="1218" y2="175"/>
+    <line x1="1350" y1="175" x2="1368" y2="175"/>
+  </g>
+
+  <!-- hidden ground truth stays only in simulation + feeds evaluation, never the AI path -->
+  <path d="M 85 230 C 85 350, 1425 380, 1425 232" stroke="#b45309" stroke-width="1.75" stroke-dasharray="6,5" fill="none" marker-end="url(#arrowGT)"/>
+  <text x="750" y="392" text-anchor="middle" font-size="12" fill="#b45309" font-weight="600">Hidden ground truth — used only to score evaluation results, never exposed to Assessment, Context, AI, or Policy</text>
+
+  <!-- legend / footer facts -->
+  <g font-size="12" fill="#374151">
+    <text x="20" y="440" font-weight="700">Verified state:</text>
+    <text x="140" y="440">378 tests passing across 37 files · clean TypeScript check · ₹0 external cost</text>
+
+    <text x="20" y="462" font-weight="700">Headline result:</text>
+    <text x="160" y="462">R2S recovery 53.50% vs baseline 56.99% (−3.49pp) · R2S revenue/attempt ₹570.27 vs ₹420.41 (+35.6%)</text>
+
+    <text x="20" y="484" font-weight="700">Sep 3 fix:</text>
+    <text x="110" y="484">Payment-local RNG eliminated cross-payment drift; controlled A/B on assessment threshold (&gt;0 → &gt;=2) reproducibly closed part of the gap</text>
+  </g>
+</svg>
